@@ -108,11 +108,37 @@ def song_bulk_create(request):
     data = request.data
     if not isinstance(data, list):
         return Response({'detail': 'Expected a list of song objects.'}, status=status.HTTP_400_BAD_REQUEST)
-    serializer = SongSerializer(data=data, many=True, partial=True)
+
+    to_create = []
+    for item in data:
+        serializer = SongSerializer(data=item, partial=True)
+        if not serializer.is_valid():
+            continue
+        vd = serializer.validated_data
+        title = vd.get('title')
+        album = vd.get('album')
+        artists = vd.get('artists', []) or []
+        duplicate = any(
+            Song.objects.filter(
+                Q(title__iexact=title),
+                Q(album__iexact=album),
+                artists__icontains=artist
+            ).exists()
+            for artist in artists
+        )
+        if not duplicate:
+            to_create.append(item)
+
+    if not to_create:
+        return Response({'detail': 'No new songs to add.'}, status=status.HTTP_200_OK)
+
+    serializer = SongSerializer(data=to_create, many=True, partial=True)
     if serializer.is_valid():
         songs = serializer.save()
+        rebuild_metadata()
         output = SongSerializer(songs, many=True).data
         return Response(output, status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
