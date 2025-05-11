@@ -27,9 +27,20 @@ def song_list_create(request):
 
     serializer = SongSerializer(data=request.data)
     if serializer.is_valid():
+        title = serializer.validated_data['title']
+        album = serializer.validated_data['album']
+        artists = serializer.validated_data.get('artists', [])
+        conditions = [Q(title__iexact=title, album__iexact=album, artists__icontains=artist)
+                      for artist in artists]
+        if any(Song.objects.filter(cond).exists() for cond in conditions):
+            return Response(
+                {"detail": "A song with that title, album and artist combination already exists."},
+                status=status.HTTP_409_CONFLICT
+            )
         serializer.save()
         rebuild_metadata()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
