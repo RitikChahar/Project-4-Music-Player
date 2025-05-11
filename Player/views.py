@@ -103,6 +103,18 @@ def song_filter(request):
     serializer = SongSerializer(queryset, many=True)
     return Response(serializer.data)
 
+@api_view(['POST'])
+def song_bulk_create(request):
+    data = request.data
+    if not isinstance(data, list):
+        return Response({'detail': 'Expected a list of song objects.'}, status=status.HTTP_400_BAD_REQUEST)
+    serializer = SongSerializer(data=data, many=True, partial=True)
+    if serializer.is_valid():
+        songs = serializer.save()
+        output = SongSerializer(songs, many=True).data
+        return Response(output, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def metadata_list(request):
     meta = Metadata.objects.first()

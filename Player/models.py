@@ -7,14 +7,14 @@ def _lower_list(values):
 
 class Song(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(max_length=255)
-    album = models.CharField(max_length=255)
-    year = models.PositiveIntegerField()
+    title = models.CharField(max_length=255, null=True, blank=True)
+    album = models.CharField(max_length=255, null=True, blank=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
     artists = JSONField(default=list, blank=True)
     genre = JSONField(default=list, blank=True)
     language = JSONField(default=list, blank=True)
     tags = JSONField(default=list, blank=True)
-    link = models.CharField(max_length=255, blank=True)
+    link = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.title:
