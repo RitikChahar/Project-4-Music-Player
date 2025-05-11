@@ -7,14 +7,18 @@ from .serializers import SongSerializer, MetadataSerializer
 
 def rebuild_metadata():
     albums = list(Song.objects.values_list('album', flat=True).distinct())
+    years = list(Song.objects.values_list('year', flat=True).distinct())
     artists = list({artist for s in Song.objects.values_list('artists', flat=True) for artist in s})
     genres = list({g for s in Song.objects.values_list('genre', flat=True) for g in s})
     languages = list({l for s in Song.objects.values_list('language', flat=True) for l in s})
+    tags = list({l for s in Song.objects.values_list('tags', flat=True) for l in s})
     meta, _ = Metadata.objects.get_or_create(id=Metadata.objects.first().id if Metadata.objects.exists() else None)
     meta.album = albums
     meta.artists = artists
     meta.genre = genres
     meta.language = languages
+    meta.tags = tags
+    meta.year = years
     meta.save()
     return meta
 

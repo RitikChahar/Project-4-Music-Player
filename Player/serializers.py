@@ -39,7 +39,7 @@ class MetadataSerializer(serializers.ModelSerializer):
     genre    = serializers.ListField(child=serializers.CharField(), allow_empty=True)
     language = serializers.ListField(child=serializers.CharField(), allow_empty=True)
     tags = serializers.ListField(child=serializers.CharField(), allow_empty=True)
-    year = serializers.IntegerField()
+    year = serializers.ListField(child=serializers.CharField(), allow_empty=True)
 
     def validate_album(self, value):
         return _lower_list(value)

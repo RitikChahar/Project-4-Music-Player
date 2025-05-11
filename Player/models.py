@@ -34,7 +34,7 @@ class Metadata(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     album = JSONField(default=list, blank=True)
     artists = JSONField(default=list, blank=True)
-    year = models.PositiveIntegerField()
+    year = JSONField(default=list, blank=True)
     genre = JSONField(default=list, blank=True)
     language = JSONField(default=list, blank=True)
     tags = JSONField(default=list, blank=True)
