@@ -142,6 +142,16 @@ def song_bulk_create(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+def song_search(request):
+    keyword = request.query_params.get('q', '')
+    if not keyword:
+        return Response({'detail': 'Query param "q" required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    qs = Song.objects.filter(title__icontains=keyword.lower())
+    serializer = SongSerializer(qs, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def metadata_list(request):
     meta = Metadata.objects.first()
     if not meta:
