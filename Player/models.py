@@ -9,9 +9,12 @@ class Song(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     album = models.CharField(max_length=255)
+    year = models.PositiveIntegerField()
     artists = JSONField(default=list, blank=True)
     genre = JSONField(default=list, blank=True)
     language = JSONField(default=list, blank=True)
+    tags = JSONField(default=list, blank=True)
+    link = models.CharField(max_length=255, blank=True)
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -21,6 +24,7 @@ class Song(models.Model):
         self.artists = _lower_list(self.artists)
         self.genre = _lower_list(self.genre)
         self.language = _lower_list(self.language)
+        self.tags = _lower_list(self.tags)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -30,14 +34,17 @@ class Metadata(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     album = JSONField(default=list, blank=True)
     artists = JSONField(default=list, blank=True)
+    year = models.PositiveIntegerField()
     genre = JSONField(default=list, blank=True)
     language = JSONField(default=list, blank=True)
+    tags = JSONField(default=list, blank=True)
 
     def save(self, *args, **kwargs):
         self.album = _lower_list(self.album)
         self.artists = _lower_list(self.artists)
         self.genre = _lower_list(self.genre)
         self.language = _lower_list(self.language)
+        self.tags = _lower_list(self.tags)
         super().save(*args, **kwargs)
 
     def __str__(self):

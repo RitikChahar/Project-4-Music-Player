@@ -72,6 +72,12 @@ def song_filter(request):
     if filters.get('language'):
         for l in filters['language']:
             conditions.append(Q(language__icontains=l))
+    if filters.get('tags'):
+        for t in filters['tags']:
+            conditions.append(Q(tags__icontains=t))
+    if filters.get('year'):
+        for y in filters['year']:
+            conditions.append(Q(year__icontains=y))
     if conditions:
         query = conditions.pop()
         for cond in conditions:
