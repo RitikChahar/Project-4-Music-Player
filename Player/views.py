@@ -25,9 +25,26 @@ def rebuild_metadata():
 @api_view(['GET', 'POST'])
 def song_list_create(request):
     if request.method == 'GET':
+        page_size = int(request.query_params.get('page_size', 10))
+        page = int(request.query_params.get('page', 1))
+        
         songs = Song.objects.all()
-        serializer = SongSerializer(songs, many=True)
-        return Response(serializer.data)
+        total_songs = songs.count()
+        
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        
+        songs_page = songs[start_index:end_index]
+        serializer = SongSerializer(songs_page, many=True)
+        
+        response_data = {
+            'count': total_songs,
+            'next': None if end_index >= total_songs else f"?page={page+1}&page_size={page_size}",
+            'previous': None if page <= 1 else f"?page={page-1}&page_size={page_size}",
+            'results': serializer.data
+        }
+        
+        return Response(response_data)
 
     serializer = SongSerializer(data=request.data)
     if serializer.is_valid():
