@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Update Confirmation - Prelude Curation</title>
+</head>
+<body style="background-color: #121212; color: #ffffff; font-family: Arial, sans-serif; padding: 20px; margin: 0;">
+
+    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <h1 style="font-size: 24px; margin-bottom: 20px;">Email Update Confirmation</h1>
+        <p style="margin-bottom: 20px;">Hey {{ username }},</p>
+        <p style="margin-bottom: 20px;">
+            You recently requested to change the email address for your Prelude Curation account. To keep your music flowing, please confirm your new email by clicking the button below:
+        </p>
+        <a href="{{ update_link }}" style="display: block; margin-bottom: 20px; padding: 12px; background-color: #1db954; color: #ffffff; text-decoration: none; border-radius: 5px; max-width: 260px; text-align: center; font-weight: bold;">
+            Confirm New Email
+        </a>
+        <p>If you didn’t request this change, just ignore this email and nothing will change.</p>
+        <div style="margin-top: 50px; font-style: italic;">
+            <p>With rhythm,<br>Prelude Curation Team</p>
+        </div>
+    </div>
+</body>
+</html>
